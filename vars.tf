@@ -7,6 +7,7 @@ variable "region" {
 
 variable "environment" {
   description = "Deployment Environment"
+  default = "test"
 }
 
 variable "vpc_cidr" {

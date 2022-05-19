@@ -7,6 +7,15 @@ terraform {
   }
 
   required_version = ">= 0.14.9"
+
+  cloud {
+    organization = "Mendy-Terraform-Labs"
+
+    workspaces {
+      name = "terrform"
+    }
+  }
+
 }
 
 
@@ -30,12 +39,12 @@ module "Networking" {
 
 resource "aws_key_pair" "aws_key" {
   key_name   = "aws_key"
-  public_key = file("/Users/vothanhtung/workspace/infra/learning/terrform/aws_key.pub")
+  public_key = file("./aws_key.pub")
 }
 
 resource "aws_instance" "ec2_public" {
-  ami                         = "ami-0022f774911c1d690"
-  instance_type               = "t2.micro"
+  ami                         = "ami-0f095f89ae15be883"
+  instance_type               = "t2.small"
   key_name                    = "aws_key"
   security_groups             = module.Networking.security_groups_ids
   subnet_id                   =flatten( module.Networking.public_subnets_id)[0]
@@ -47,7 +56,6 @@ resource "aws_instance" "ec2_public" {
   tags = {
     "Name" = "EC2-PUBLIC"
   }
-  # Copies the ssh key file to home dir
   # Copies the ssh key file to home dir
   provisioner "remote-exec" {
     inline = [
@@ -61,7 +69,7 @@ resource "aws_instance" "ec2_public" {
     type        = "ssh"
     host        = self.public_ip
     user        = "ec2-user"
-    private_key = file("/Users/vothanhtung/workspace/infra/learning/terrform/aws_key")
+    private_key = file("./aws_key")
     timeout     = "4m"
   }
 }
